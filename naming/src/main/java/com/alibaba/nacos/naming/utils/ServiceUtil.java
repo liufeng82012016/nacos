@@ -184,6 +184,7 @@ public final class ServiceUtil {
      */
     public static ServiceInfo selectInstancesWithHealthyProtection(ServiceInfo serviceInfo, ServiceMetadata serviceMetadata, String cluster,
             boolean healthyOnly, boolean enableOnly, String subscriberIp) {
+        // 构建过滤器
         InstancesFilter filter = (filteredResult, allInstances, healthyCount) -> {
             if (serviceMetadata == null) {
                 return;

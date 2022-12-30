@@ -98,6 +98,7 @@ public class PersistentClientOperationServiceImpl extends RequestProcessor4CP im
     
     @Override
     public void registerInstance(Service service, Instance instance, String clientId) {
+        // 从内存中获取Service对象，如果添加成功，发布一个事件
         Service singleton = ServiceManager.getInstance().getSingleton(service);
         if (singleton.isEphemeral()) {
             throw new NacosRuntimeException(NacosException.INVALID_PARAM,
@@ -113,6 +114,7 @@ public class PersistentClientOperationServiceImpl extends RequestProcessor4CP im
                 .build();
         
         try {
+            // 通过协议，同步其他节点
             protocol.write(writeRequest);
             Loggers.RAFT.info("Client registered. service={}, clientId={}, instance={}", service, instance, clientId);
         } catch (Exception e) {

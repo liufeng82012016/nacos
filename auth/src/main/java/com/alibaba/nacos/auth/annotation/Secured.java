@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * Annotation indicating that the annotated request should be authorized.
- *
+ * 表示接口需要授权
  * @author nkorange
  * @author mai.jh
  * @since 1.2.0

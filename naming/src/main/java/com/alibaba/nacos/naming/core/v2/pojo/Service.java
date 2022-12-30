@@ -95,7 +95,8 @@ public class Service implements Serializable {
     public String getGroupedServiceName() {
         return NamingUtils.getGroupedName(name, group);
     }
-    
+
+    // 同一service判断
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -105,6 +106,7 @@ public class Service implements Serializable {
             return false;
         }
         Service service = (Service) o;
+        // nameSpace group name相同，表示是同一个service
         return namespace.equals(service.namespace) && group.equals(service.group) && name.equals(service.name);
     }
     

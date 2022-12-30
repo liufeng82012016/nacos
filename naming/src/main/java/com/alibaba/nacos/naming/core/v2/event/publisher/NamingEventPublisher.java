@@ -128,11 +128,16 @@ public class NamingEventPublisher extends Thread implements ShardedEventPublishe
         this.shutdown = true;
         this.queue.clear();
     }
-    
+
+    /**
+     * 继承自Thread
+     */
     @Override
     public void run() {
         try {
+            // 等待初始化
             waitSubscriberForInit();
+            // 处理事件
             handleEvents();
         } catch (Exception e) {
             Loggers.EVT_LOG.error("Naming Event Publisher {}, stop to handle event due to unexpected exception: ",
@@ -154,6 +159,7 @@ public class NamingEventPublisher extends Thread implements ShardedEventPublishe
     private void handleEvents() {
         while (!shutdown) {
             try {
+                // 从队列中获取事件，并进行处理
                 final Event event = queue.take();
                 handleEvent(event);
             } catch (InterruptedException e) {

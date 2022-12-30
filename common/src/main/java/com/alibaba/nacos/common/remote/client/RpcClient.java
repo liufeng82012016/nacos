@@ -633,15 +633,18 @@ public abstract class RpcClient implements Closeable {
         while (retryTimes < rpcClientConfig.retryTimes() && System.currentTimeMillis() < timeoutMills + start) {
             boolean waitReconnect = false;
             try {
+                // 等待重连
                 if (this.currentConnection == null || !isRunning()) {
                     waitReconnect = true;
                     throw new NacosException(NacosException.CLIENT_DISCONNECT,
                             "Client not connected, current status:" + rpcClientStatus.get());
                 }
+                // 发起请求
                 response = this.currentConnection.request(request, timeoutMills);
                 if (response == null) {
                     throw new NacosException(SERVER_ERROR, "Unknown Exception.");
                 }
+                // 如果异常了
                 if (response instanceof ErrorResponse) {
                     if (response.getErrorCode() == NacosException.UN_REGISTER) {
                         synchronized (this) {
@@ -681,7 +684,7 @@ public abstract class RpcClient implements Closeable {
             retryTimes++;
             
         }
-        
+        // 设置状态运行中
         if (rpcClientStatus.compareAndSet(RpcClientStatus.RUNNING, RpcClientStatus.UNHEALTHY)) {
             switchServerAsyncOnRequestFail();
         }

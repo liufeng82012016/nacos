@@ -272,6 +272,7 @@ public class NotifyCenter {
     /**
      * Request publisher publish event Publishers load lazily, calling publisher. Start () only when the event is
      * actually published.
+     * 请求发布者发布事件 发布者延迟加载，调用发布者。仅在事件实际发布时启动
      *
      * @param event class Instances of the event.
      */

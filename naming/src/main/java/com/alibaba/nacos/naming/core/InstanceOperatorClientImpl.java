@@ -101,11 +101,14 @@ public class InstanceOperatorClientImpl implements InstanceOperator {
     @Override
     public void registerInstance(String namespaceId, String serviceName, Instance instance) throws NacosException {
         NamingUtils.checkInstanceIsLegal(instance);
-        
+        // 短暂的
         boolean ephemeral = instance.isEphemeral();
+        // clientId=ip:port#{ephemeral}
         String clientId = IpPortBasedClient.getClientId(instance.toInetAddr(), ephemeral);
         createIpPortClientIfAbsent(clientId);
+        // 初始化并返回，
         Service service = getService(namespaceId, serviceName, ephemeral);
+        // 根据是否持久化做不同的处理
         clientOperationService.registerInstance(service, instance, clientId);
     }
     
@@ -181,12 +184,13 @@ public class InstanceOperatorClientImpl implements InstanceOperator {
     public ServiceInfo listInstance(String namespaceId, String serviceName, Subscriber subscriber, String cluster,
             boolean healthOnly) {
         Service service = getService(namespaceId, serviceName, true);
-        // For adapt 1.X subscribe logic
+        // For adapt 1.X subscribe logic 为了兼容1.x订阅逻辑
         if (subscriber.getPort() > 0 && pushService.canEnablePush(subscriber.getAgent())) {
             String clientId = IpPortBasedClient.getClientId(subscriber.getAddrStr(), true);
             createIpPortClientIfAbsent(clientId);
             clientOperationService.subscribeService(service, subscriber, clientId);
         }
+        // 将service封装成ServiceInfo对象
         ServiceInfo serviceInfo = serviceStorage.getData(service);
         ServiceMetadata serviceMetadata = metadataManager.getServiceMetadata(service).orElse(null);
         ServiceInfo result = ServiceUtil
